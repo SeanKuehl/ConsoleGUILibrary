@@ -10,16 +10,31 @@ int main() {
 	//divide each 'screen' into slots that can be used by single elements
 	//or larger elements can be strung across multiple, a borderline idea
 	//a 'button' is surrounded like a box, a text box doesn't have that etc
-	/*Form f = Form();
+	int x;
+	Form f = Form();
 	
-	f.SetCell(1);
+	//f.AddBorderedText("scott lee kuehl", 'w', 8);
+	/*f.AddMultiText("hello");
+	f.AddMultiText("hello");
+	f.AddMultiText("hello");
+	f.AddMultiText("hello");
+	f.AddMultiText("hello");
+	f.AddMultiText("hello");
+	f.AddMultiText("hello");
+	f.CreateMultiText(10);*/
+
+	/*f.AddFormTitle("sup buddy");
+	f.AddFormText("I am here and I might just exist in this ethereal plane");
+	f.AddFormText("this is where I live I think");
+	f.AddFormText("hey buday");
+	f.CreateTextForm();*/
+
+	//addformtext, addformtitle, createtextform
 	
 
-	f.ShowGrid();*/
-	BaseComponent b = BaseComponent(5, 1);
-	b.CenteredText("hello there");
-	b.FillBorder('x');
-	b.ShowComponent();
+	f.ShowForm();
+	std::cin >> x;
+	
 
 	return 0;
 }

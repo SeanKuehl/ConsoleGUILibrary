@@ -10,12 +10,17 @@
 #define cellHieght 7
 #define cellWidth 22
 #define functionalFormWidth 118
+#define formMiddle 60
+#define firstYCoordAfterTitle 2
 
 class Form
 {
 	//the whole thing is based around a large vector of chars
 private:
 	char formGrid[formHieght][formWidth];
+	std::vector<std::string> bodyText;	//this is if the user wants a mainly text form
+	std::vector<std::string> multiTextComponent;
+	std::string title;	//this is if the user wants a mainly text form
 	std::vector<BaseComponent> componentList;
 	//I'll have a list of components and I'll add them all from their attributes
 	//when the form is loaded
@@ -62,23 +67,9 @@ private:
 		}
 	}
 
-public:
-
-	Form() {
-		InitializeGrid();
-		BasicGrid();
-	}
-
-	Form(std::string title, std::string text) {
-		//this is for a text form. It will use centered text for the title
-		//and will put down the text as it is
-		int firstLineMiddle = functionalFormWidth / 2;
-		//see centered text in vase component
-	}
-
 	int GetYPosition(int cell) {
 		int yPos = 0;
-		
+
 		while (cell > 5) {
 			cell -= 5;	//the more 5s you can take away, the lower the row it's in
 			yPos++;
@@ -92,7 +83,7 @@ public:
 
 		//to get xpos on first row, take one away from all, on next row it's five, on third it's ten, on fourth it's 15
 		if (cell > 5) {
-			xPos = cell - ((yPos * 5)) -1;
+			xPos = cell - ((yPos * 5)) - 1;
 			if (xPos == 5) {
 				xPos -= 1;	//this is for those like 10, 15 and 20
 			}
@@ -104,50 +95,150 @@ public:
 		return xPos;
 	}
 
+public:
+
+	Form() {
+		InitializeGrid();
+		BasicGrid();
+	}
+
+	
+
+	
+
+	void AddFormTitle(std::string text) {
+		title = text;
+	}
+
+	void AddFormText(std::string text) {
+		bodyText.push_back(text);
+	}
+
+	void CreateTextForm() {
+		//takes stuff done in addtitle and addformtext and puts them on the screen
+		//formMiddle is a precompiler var already
+		
+		//first align the title
+		AlignFormTitle(title);
+		//then keep aligning text lines until you run out of them
+
+		//bodyText
+		int centerX = formMiddle;	//keep in mind the border is the first character
+		int centerY = firstComponentYCoord;	//because title already occupies the top
+		int stringSize = 0;
+		int startPoint = 0;
+		int counter = 0;
+		int numberOfLines = bodyText.size();
+		std::string str;
+
+		
+
+		for (int i = firstYCoordAfterTitle; i < numberOfLines+ firstYCoordAfterTitle; i++) {
+			//i starts at one because the title occupies the top spot, that being one
+			
+			str = bodyText[i- firstYCoordAfterTitle];	//offset i so it's the same if i started at 0
+			stringSize = str.size();
+			startPoint = centerX - (stringSize / 2);
+			centerY = i;
+			counter = 0;
+
+			for (int i = startPoint; i < (startPoint + (stringSize)); i++) {
+				formGrid[centerY][i] = str[counter];
+				//std::cout << charList[centerY][i] << i << "\n";
+				counter++;
+			}
+
+
+		}
+
+		
+	}
+
+	void AlignFormTitle(std::string title) {
+		//works
+
+
+		
+		//find the functional center of the string and put it on the charList's middle line
+		int centerX = formMiddle;	//keep in mind the border is the first character
+		int centerY = firstComponentYCoord;
+		int stringSize = title.size();
+		int startPoint = centerX - (stringSize / 2);
+		int counter = 0;
+
+
+
+		for (int i = startPoint; i < (startPoint + (stringSize)); i++) {
+			formGrid[centerY][i] = title[counter];
+			//std::cout << charList[centerY][i] << i << "\n";
+			counter++;
+		}
+	}
+
+	
+
 	void AddComponents() {
 		//go through list of comps, add them to formGrid based on coords
+		int startingX = 0;
+		int startingY = 0;
 		for (BaseComponent bc : componentList) {
-
+			startingX = bc.topLeftX;
+			startingY = bc.topLeftY;
+			//bc.charList, formGrid
+			//another for loop that adds to both nums in both places in both lists
+			for (int y = 0; y < cellHieght; y++) {
+				for (int x = 0; x < cellWidth; x++) {
+					formGrid[startingY+y][startingX+x] = bc.charList[0+y][0+x];
+				}
+			}
+			
 		}
 	}
 
 	void AddBorderedText(std::string text, char border, int cell) {
-		//componentList.push_back(BaseComponent())
-	}
-
-	void SetCell(int cell) {
 		//this will be a part of putting objects on the screen
-		int yPos = firstComponentYCoord + (cellHieght *GetYPosition(cell));
-		int xPos = firstComponentXCoord + (cellWidth *GetXPosition(cell, GetYPosition(cell)));
-		/*int yPos =  GetYPosition(cell);
-		int xPos = GetXPosition(cell, yPos);*/
+		int yPos = firstComponentYCoord + (cellHieght * GetYPosition(cell));
+		int xPos = firstComponentXCoord + (cellWidth * GetXPosition(cell, GetYPosition(cell)));
 		BaseComponent b = BaseComponent(xPos, yPos);
-		b.CenteredText("hello there");
-
-		//this is the x and y pos of the top left of the cell
-		//std::cout << xPos << "  " << yPos << "  " << cell << "\n";
-		formGrid[yPos][xPos] = 'x';
-		formGrid[yPos + 5][xPos] = 'x';
-		formGrid[yPos][xPos + 20] = 'x';
-		formGrid[yPos + 5][xPos + 20] = 'x';
+		b.CenteredText(text);
+		b.FillBorder(border);
+		componentList.push_back(b);
+		AddComponents();
 		
-			
-		/*int topLeftX = 27;
-		int topLeftY = 1;
-		formGrid[topLeftY][topLeftX] = 'x';
-		formGrid[topLeftY+5][topLeftX] = 'x';
-		formGrid[topLeftY][topLeftX+20] = 'x';
-		formGrid[topLeftY + 5][topLeftX+20] = 'x';
-
-		topLeftX = 5;
-		topLeftY = 1;
-		formGrid[topLeftY][topLeftX] = 'x';
-		formGrid[topLeftY + 5][topLeftX] = 'x';
-		formGrid[topLeftY][topLeftX + 20] = 'x';
-		formGrid[topLeftY + 5][topLeftX + 20] = 'x';*/
 	}
 
-	void ShowGrid() {
+	void AddText(std::string text, int cell) {
+		//this will be a part of putting objects on the screen
+		int yPos = firstComponentYCoord + (cellHieght * GetYPosition(cell));
+		int xPos = firstComponentXCoord + (cellWidth * GetXPosition(cell, GetYPosition(cell)));
+		BaseComponent b = BaseComponent(xPos, yPos);
+		b.CenteredText(text);
+		
+		componentList.push_back(b);
+		AddComponents();
+	}
+
+	void AddMultiText(std::string text) {
+		multiTextComponent.push_back(text);
+
+	}
+
+	void CreateMultiText(int cell) {
+		//this will be a part of putting objects on the screen
+		std::vector<std::string> setter;
+		int yPos = firstComponentYCoord + (cellHieght * GetYPosition(cell));
+		int xPos = firstComponentXCoord + (cellWidth * GetXPosition(cell, GetYPosition(cell)));
+		BaseComponent b = BaseComponent(xPos, yPos);
+		b.FillWithText(multiTextComponent[0], multiTextComponent[1], multiTextComponent[2], multiTextComponent[3], multiTextComponent[4], multiTextComponent[5], multiTextComponent[6]);
+
+		componentList.push_back(b);
+		AddComponents();
+		multiTextComponent = setter;	//clear it for the next component
+	}
+
+	
+
+	void ShowForm() {
 		for (int y = 0; y < 30; y++) {
 			
 			for (int x = 0; x < 120; x++) {
@@ -158,17 +249,7 @@ public:
 		}
 	}
 
-	void AddButton() {
-
-	}
-
-	void AddText() {
-
-	}
-
-	void AddList() {
-		//stretches across cells vertically with text only
-	}
+	
 
 };
 

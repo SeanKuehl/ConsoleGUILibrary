@@ -28,13 +28,7 @@ public:
 		topLeftY = y;
 	}
 
-	void InitializeList() {
-		for (int y = 0; y < cellHieght; y++) {
-			for (int x = 0; x < cellWidth; x++) {
-				charList[y][x] = ' ';
-			}
-		}
-	}
+	
 
 	void FillBorder(char c) {
 		//works
@@ -56,6 +50,48 @@ public:
 		}
 	}
 
+	void FillWithText(std::string firstLine, std::string secondLine, std::string thirdLine, std::string fourthLine, std::string fifthLine, std::string sixthLine, std::string seventhLine) {
+		std::string lineList[] = { firstLine, secondLine, thirdLine, fourthLine, fifthLine, sixthLine, seventhLine };
+		int centerX = cellWidth / 2;	//keep in mind the border is the first character
+		int centerY = 0;	//increment at end
+		int stringSize = 0;
+		int startPoint = 0;
+		int counter = 0;
+		int numberOfLines = cellHieght;
+		std::string str;
+
+		//before we begin, check that all the lengths of the texts will fit, 22 chars or less
+		for (int i = 0; i < numberOfLines; i++) {
+			try {
+				if (lineList[i].size() > 22) {
+					throw lineList[i];
+				}
+			}
+			catch (std::string str) {
+				std::cout << "an exception occured: " << str << " is longer than 22 chars.\n";
+			}
+		}
+
+
+
+		for (int i = 0; i < numberOfLines; i++) {
+			str = lineList[i];
+			stringSize = str.size();
+			startPoint = centerX - (stringSize / 2);
+			centerY = i;
+			counter = 0;
+			
+			for (int i = startPoint; i < (startPoint + (stringSize)); i++) {
+				charList[centerY][i] = str[counter];
+				//std::cout << charList[centerY][i] << i << "\n";
+				counter++;
+			}
+			
+
+		}
+	
+	}
+
 	void CenteredText(std::string str) {
 		//works
 		
@@ -72,23 +108,23 @@ public:
 
 		for (int i = startPoint; i < (startPoint + (stringSize)); i++) {
 			charList[centerY][i] = str[counter];
-			std::cout << charList[centerY][i] << i << "\n";
+			//std::cout << charList[centerY][i] << i << "\n";
 			counter++;
 		}
 
 	}
 
-	void ShowComponent() {
+	
+	
+
+private:
+	void InitializeList() {
 		for (int y = 0; y < cellHieght; y++) {
-			std::cout << "\n";
 			for (int x = 0; x < cellWidth; x++) {
-				std::cout << charList[y][x];
+				charList[y][x] = ' ';
 			}
 		}
 	}
-	
-private:
-	
 	
 	
 
