@@ -1,0 +1,2 @@
+C:\Users\turqo\OneDrive\Desktop\Projects\ProjectAutocrat\Debug\ConsoleGUILibrary.pdb
+C:\Users\turqo\OneDrive\Desktop\Projects\ProjectAutocrat\ConsoleGUILibrary\Debug\ConsoleGUILibrary.pdb
